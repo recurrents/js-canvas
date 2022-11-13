@@ -21,7 +21,7 @@ function createDropdown() {
     const option = document.createElement("option");
     option.value = app;
     option.text = app.name;
-    option.addEventListener('click', () => app(canv, ctx))
+    option.addEventListener('click', () => app(canv, ctx)); //cancelAnimationFrame(draw)
     selectList.appendChild(option);
   }
 }
