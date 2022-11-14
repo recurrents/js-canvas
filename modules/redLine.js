@@ -1,39 +1,48 @@
 const pos = [];
+const amount = 720; // canv.width
+const color = "rgba(255, 64, 64, 0.02)";
 const dot = {
   size: 1,
-  amount: 720,
-  yPos: 800 / 2,
-  speed: 0.02
+  speed: 0.02,
+  x: 720 / 2,
+  y: 480 / 2,
+  xv: 0,
+  yv: 0,
+
+  step() {
+    return Math.random() * this.speed - (this.speed / 2);
+  },
+
+  move() {
+    this.xv += this.step();
+    this.yv += this.step();
+    this.x += this.xv;
+    this.y += this.yv;
+    this.bounce();
+  },
+
+  wrap() {
+    if (this.x < 0) this.x = 720; // canv.width
+    else if (this.x > 720) this.x = 0;
+    if (this.y < 0) this.y = 480
+    else if (this.y > 480) this.y = 0; // canv.height
+  },
+
+  bounce() {
+    if (this.x < 0 || this.x > 720) this.xv = -this.xv; // canv.width
+    if (this.y < 0 || this.y > 480) this.yv = -this.yv;
+  },
 }
 
-for(let i = 0; i < dot.amount; i++) {
-  pos.push({x: i, y: dot.yPos, xv: 0, yv: 0});
-}
-
-const random = () => Math.random() * dot.speed - (dot.speed / 2)
-
-function wrap(pos){
-  if (pos.x < 0) pos.x = canv.width;
-  else if (pos.x > canv.width) pos.x = 0;
-  if (pos.y < 0) pos.y = canv.width;
-  else if (pos.y > canv.width) pos.y = 0;
-  return pos;
-}
-
-function moveDot(obj) {
-  obj.xv += random();
-  obj.yv += random();
-  obj.x += obj.xv;
-  obj.y += obj.yv;
-  obj = wrap(obj);
-  return obj;
+for(let i = 0; i < amount; i++) {
+  pos.push(Object.create(dot));
 }
 
 export function redLine(canv, ctx){
-  ctx.fillStyle="rgba(255, 64, 64, 0.02)";
+  ctx.fillStyle = color;
   function draw() {
     for(let obj of pos) {
-      obj = moveDot(obj);
+      obj.move();
       ctx.fillRect(obj.x, obj.y, dot.size, dot.size);
     }
     requestAnimationFrame(draw);
